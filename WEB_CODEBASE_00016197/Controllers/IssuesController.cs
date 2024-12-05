@@ -27,7 +27,7 @@ namespace WEB_CODEBASE_00016197.Controllers
             return await _context.Issues.Include(i => i.User).ToListAsync();
         }
 
-        // GET: api/Issues/5 000161as
+        // GET: api/Issues/5 00016197
         [HttpGet("{id}")]
         public async Task<ActionResult<Issue>> GetIssue(int id)
         {
