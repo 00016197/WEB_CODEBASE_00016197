@@ -12,8 +12,8 @@ using WEB_CODEBASE_00016197.Data;
 namespace WEB_CODEBASE_00016197.Migrations
 {
     [DbContext(typeof(IssueTrackerContext))]
-    [Migration("20241203175738_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241205110712_IssueTrackerDb")]
+    partial class IssueTrackerDb
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

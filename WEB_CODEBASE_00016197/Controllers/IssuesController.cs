@@ -5,6 +5,7 @@ using WEB_CODEBASE_00016197.Models_00016197;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WEB_CODEBASE_00016197.DTOs;
 
 namespace WEB_CODEBASE_00016197.Controllers
 {
@@ -26,7 +27,7 @@ namespace WEB_CODEBASE_00016197.Controllers
             return await _context.Issues.Include(i => i.User).ToListAsync();
         }
 
-        // GET: api/Issues/5 00016197
+        // GET: api/Issues/5 000161as
         [HttpGet("{id}")]
         public async Task<ActionResult<Issue>> GetIssue(int id)
         {
@@ -42,15 +43,21 @@ namespace WEB_CODEBASE_00016197.Controllers
 
         // POST: api/Issues 00016197
         [HttpPost]
-        public async Task<ActionResult<Issue>> CreateIssue(Issue issue)
+        public async Task<ActionResult<Issue>> CreateIssue(IssueForCreationDto dto)
         {
             // Optional: Validate if the UserId exists
-            var userExists = await _context.Users.AnyAsync(u => u.UserId == issue.UserId);
+            var userExists = await _context.Users.AnyAsync(u => u.UserId == dto.UserId);
             if (!userExists)
             {
                 return BadRequest("User with the specified UserId does not exist.");
             }
-
+            var issue = new Issue()
+            {
+                Title = dto.Title,
+                Description = dto.Description,
+                UserId = dto.UserId,
+                CreatedDate = DateTime.UtcNow,
+            };
             _context.Issues.Add(issue);
             await _context.SaveChangesAsync();
 
@@ -59,12 +66,13 @@ namespace WEB_CODEBASE_00016197.Controllers
 
         // PUT: api/Issues/5 00016197
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateIssue(int id, Issue issue)
+        public async Task<IActionResult> UpdateIssue(int id, IssueForUpdateDto dto)
         {
-            if (id != issue.IssueId)
-            {
-                return BadRequest();
-            }
+            var issue = await _context.Issues.FirstOrDefaultAsync(i => i.IssueId == id);
+            if (issue == null)
+                return BadRequest("Issue not found");
+            issue.Title = dto.Title;
+            issue.Description = dto.Description;
 
             _context.Entry(issue).State = EntityState.Modified;
 

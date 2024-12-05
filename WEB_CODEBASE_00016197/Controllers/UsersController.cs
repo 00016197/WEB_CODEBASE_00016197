@@ -5,6 +5,7 @@ using WEB_CODEBASE_00016197.Models_00016197;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using WEB_CODEBASE_00016197.DTOs;
 
 namespace WEB_CODEBASE_00016197.Controllers
 {
@@ -42,8 +43,14 @@ namespace WEB_CODEBASE_00016197.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<User>> CreateUser(User user)
+        
+        public async Task<ActionResult<User>> CreateUser(UserForCreationDto dto)
         {
+            var user = new User()
+            {
+                Name = dto.Name,
+                Email = dto.Email,
+            };
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
 
@@ -52,13 +59,15 @@ namespace WEB_CODEBASE_00016197.Controllers
 
         // PUT: api/Users/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, User user)
+        public async Task<IActionResult> UpdateUser(int id, UserForUpdateDto dto)
         {
-            if (id != user.UserId)
+            var user = await _context.Users.FirstOrDefaultAsync(u=> u.UserId == id);
+            if (user == null)
             {
-                return BadRequest();
+                return BadRequest("User not found");
             }
-
+            user.Name = dto.Name;
+            user.Email = dto.Email;
             _context.Entry(user).State = EntityState.Modified;
 
             try
